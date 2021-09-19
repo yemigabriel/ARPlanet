@@ -9,7 +9,7 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController {
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -23,10 +23,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.showsStatistics = true
         
         // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let scene = SCNScene()
+        
+        let position = SCNVector3(0, 0, -3)
+        let mars = createMars(at: position)
+        
+        scene.rootNode.addChildNode(mars)
         
         // Set the scene to the view
         sceneView.scene = scene
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,7 +51,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
+}
 
+extension ViewController: ARSCNViewDelegate {
+    
     // MARK: - ARSCNViewDelegate
     
 /*
@@ -71,4 +80,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
+}
+
+// custom functions
+extension ViewController {
+    
+    func createMars(at position: SCNVector3) -> SCNNode {
+        let sphere = SCNSphere(radius: 0.4)
+        let node = SCNNode(geometry: sphere)
+        node.position = position
+        
+        let material = SCNMaterial()
+        material.diffuse.contents = UIImage(named: "mars_planet.png")
+        sphere.firstMaterial = material
+        
+        return node
+    }
+    
 }
